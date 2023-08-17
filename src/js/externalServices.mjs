@@ -1,12 +1,10 @@
 const baseURL = import.meta.env.VITE_SERVER_URL;
-
-function convertToJson(res) {
+async function convertToJson(res) {
+  const data = await res.json();
   if (res.ok) {
-    return res.json();
+    return data;
   } else {
-    return res.json().then(jsonResponse => {
-      throw { name: 'servicesError', message: jsonResponse };
-    })
+    throw { name: "servicesError", message: data };
   }
 }
 
@@ -33,7 +31,6 @@ export async function checkout(payload) {
   return await fetch(baseURL + "checkout/", options).then(convertToJson);
 }
 
-
 export async function loginRequest(user) {
   const options = {
     method: "POST",
@@ -45,14 +42,17 @@ export async function loginRequest(user) {
   const response = await fetch(baseURL + "login", options).then(convertToJson);
   return response.accessToken;
 }
-
+// make a request to the server for the current orders
+// requires: a valid token
+// returns: a list of orders
 export async function getOrders(token) {
   const options = {
     method: "GET",
+    // the server will reject our request if we don't include the Authorization header with a valid token!
     headers: {
-      'Authorization': `Bearer ${token}`,
-    }
-  }
-  const response = await fetch(baseURL + "orders", options).then(convertToJson)
-  return response
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const response = await fetch(baseURL + "orders", options).then(convertToJson);
+  return response;
 }

@@ -82,7 +82,6 @@ export async function loadHeaderFooter() {
   renderWithTemplate(headerTemplateFn, headerEl);
   renderWithTemplate(footerTemplateFn, footerEl);
 }
-
 export function alertMessage(message, scroll = true, duration = 3000) {
   const alert = document.createElement("div");
   alert.classList.add("alert");
@@ -95,11 +94,14 @@ export function alertMessage(message, scroll = true, duration = 3000) {
   });
   const main = document.querySelector("main");
   main.prepend(alert);
+  // make sure they see the alert by scrolling to the top of the window
+  //we may not always want to do this...so default to scroll=true, but allow it to be passed in and overridden.
   if (scroll) window.scrollTo(0, 0);
 
-  setTimeout(function () {
-    main.removeChild(alert);
-  }, duration);
+  // left this here to show how you could remove the alert automatically after a certain amount of time.
+  // setTimeout(function () {
+  //   main.removeChild(alert);
+  // }, duration);
 }
 
 export function removeAllAlerts() {
